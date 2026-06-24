@@ -17,12 +17,17 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Install Cordova Lite (Convertisseur)
+    - name: Install Cordova Lite & Setup Icon
       run: |
         npm install -g cordova
         cordova create mon-app com.mastersecure.premium MasterSecure
         rm -rf mon-app/www/*
         cp -r www/* mon-app/www/
+        
+        # Injection automatique de l'icône avec ton nom de fichier images.png
+        if [ -f mon-app/www/images.png ]; then
+          sed -i '/<\/widget>/i \    <icon src="www/images.png" \/>' mon-app/config.xml
+        fi
 
     - name: Build APK Backend
       run: |
