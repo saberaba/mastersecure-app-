@@ -1,25 +1,37 @@
-name: Build APK Direct
+name: Build Android APK Official
 on:
   push:
     branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  html-to-apk:
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
 
-    - name: Convert HTML to APK
-      uses: tunitis/html-to-apk@v1.0.0
+    - name: Set up Java JDK 17
+      uses: actions/setup-java@v4
       with:
-        input-dir: 'www'
-        app-name: 'MasterSecure'
-        package-name: 'com.mastersecure.premium'
+        distribution: 'zulu'
+        java-version: '17'
 
-    - name: Upload APK
+    - name: Install Cordova Lite (Convertisseur)
+      run: |
+        npm install -g cordova
+        cordova create mon-app com.mastersecure.premium MasterSecure
+        rm -rf mon-app/www/*
+        cp -r www/* mon-app/www/
+
+    - name: Build APK Backend
+      run: |
+        cd mon-app
+        cordova platform add android --no-telemetry
+        cordova build android --device --no-telemetry
+
+    - name: Upload APK Ready
       uses: actions/upload-artifact@v4
       with:
         name: MasterSecure-APK
-        path: ./*.apk
+        path: mon-app/platforms/android/app/build/outputs/apk/debug/app-debug.apk
