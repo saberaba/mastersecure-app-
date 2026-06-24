@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MasterSecure Mobile Premium</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background: #0f111a;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Arrière-plan design avec cercles lumineux */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    z-index: 0;
+    filter: blur(100px);
+    opacity: 0.15;
+}
+body::before {
+    background: #ff5500;
+    top: 10%;
+    left: -100px;
+}
+body::after {
+    background: #00ff95;
+    bottom: 10%;
+    right: -100px;
+}
+
+.container{
+    width:100%;
+    max-width:480px;
+    z-index: 1;
+}
+
+/* EN-TÊTE LOGO MASTERCARD UNIQUEMENT */
+.header-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
+
+.logo-text {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 15px;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+}
+
+/* CARTE BANCAIRE PREMIUM */
+.card-preview{
+    position:relative;
+    width:100%;
+    aspect-ratio: 1.58 / 1;
+    margin:0 auto 30px auto;
+    border-radius:24px;
+    overflow:hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%);
+    backdrop-filter:blur(30px);
+    -webkit-backdrop-filter:blur(30px);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+    padding: 25px;
+    color:white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mc-logo{
+    position:absolute;
+    right: 25px;
+    top: 25px;
+    display:flex;
+}
+
+.circle1{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#EB001B;
+}
+
+.circle2{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#F79E1B;
+    margin-left:-14px;
+    opacity:0.9;
+}
+
+.chip{
+    width:48px;
+    height:35px;
+    background:linear-gradient(135deg, #f2cb6c 0%, #c69331 100%);
+    border-radius:8px;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
+    position: relative;
+}
+
+.number{
+    font-size: 24px;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    margin: 15px 0;
+}
+
+.bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items: flex-end;
+}
+
+.bottom-label {
+    font-size:9px;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.bottom-value {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* BOÎTE DE FORMULAIRE */
+.form-box{
+    width: 100%;
+    background: rgba(18, 22, 35, 0.75);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-radius:28px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
+
+h2{
+    color:white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom:20px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+input{
+    width:100%;
+    padding:16px 20px;
+    margin-bottom:15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius:16px;
+    background: rgba(255,255,255,0.04);
+    color:white;
+    font-size: 15px;
+    outline:none;
+    transition: all 0.3s;
+}
+
+input:focus {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(247, 158, 27, 0.5);
+    box-shadow: 0 0 15px rgba(247, 158, 27, 0.1);
+}
+
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    background: linear-gradient(90deg, #ff4500, #ff8c00);
+    box-shadow: 0 4px 20px rgba(255, 69, 0, 0.3);
+    transition: all 0.3s;
+}
+
+button:hover {
+    box-shadow: 0 6px 25px rgba(255, 69, 0, 0.45);
+}
+
+button:active {
+    transform: scale(0.98);
+}
+
+/* SECTION ERREUR */
+.error-message {
+    display: none;
+    background: rgba(235, 0, 27, 0.15);
+    color: #ff5252;
+    padding: 15px;
+    border-radius: 14px;
+    margin-top: 20px;
+    border: 1px solid rgba(235, 0, 27, 0.3);
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ZONE DE RÉSULTATS */
+.result{
+    display:none;
+    margin-top:10px;
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* BLOC SOLDE & DOTATIONS DASHBOARD */
+.info-dotation {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 25px;
+}
+
+.solde-container {
+    background: linear-gradient(135deg, rgba(0, 255, 149, 0.12) 0%, rgba(0, 255, 149, 0.02) 100%);
+    border: 1px solid rgba(0, 255, 149, 0.25);
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dotation-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.dotation-row:last-child {
+    border-bottom: none;
+}
+
+.dotation-label {
+    color: #94a3b8;
+}
+
+.dotation-value {
+    font-weight: 600;
+    color: #f1f5f9;
+}
+
+.highlight-green {
+    color: #00ff95 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 149, 0.2);
+}
+
+/* LISTE DES TRANSACTIONS ÉLÉGANTE */
+.tx-list {
+    max-height: 330px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 30px;
+}
+
+.tx-list::-webkit-scrollbar {
+    width: 4px;
+}
+.tx-list::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
+
+.transaction {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+}
+
+.transaction:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.tx-income {
+    border-left: 4px solid #00ff95; 
+}
+
+.tx-expense {
+    border-left: 4px solid #ff4500; 
+}
+
+.tx-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.tx-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f8fafc;
+}
+
+.tx-date {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+}
+
+.tx-eta {
+    font-size: 10.5px;
+    color: #ffaa00;
+    font-weight: 500;
+    margin-top: 3px;
+    line-height: 1.3;
+}
+
+.amount {
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.amount-in {
+    color: #00ff95;
+}
+
+.amount-out {
+    color: #ff5252;
+}
+
+/* SECTION CHAT ASSISTANCE */
+.support-chat {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 18px;
+    margin-top: 25px;
+}
+
+.support-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.support-title::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #00ff95;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ff95;
+}
+
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 15px;
+}
+
+.msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
+
+.msg-user {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.02);
+}
+
+.msg-agent {
+    background: linear-gradient(135deg, rgba(247, 158, 27, 0.12) 0%, rgba(247, 158, 27, 0.03) 100%);
+    color: #ffb84d;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(247, 158, 27, 0.2);
+}
+
+.msg-meta {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 4px;
+    display: block;
+    font-weight: 500;
+}
+
+.msg-user .msg-meta {
+    text-align: right;
+}
+
+/* INPUT DE SAISIE POUR LE CHAT SUPPORT */
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 15px;
+    margin-top: 5px;
+}
+
+.chat-input-container input {
+    margin-bottom: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    border-radius: 12px;
+}
+
+.chat-input-container button {
+    width: auto;
+    padding: 0 20px;
+    font-size: 13px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #ff5500, #ff7700);
+    white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- En-tête avec Mastercard (Fixe en haut) -->
+    <div class="header-logos">
+        <span class="logo-text">Secured By</span>
+        <div class="logo-container">
+            <svg style="height: 24px;" viewBox="0 0 100 60">
+                <circle cx="35" cy="30" r="25" fill="#EB001B" />
+                <circle cx="65" cy="30" r="25" fill="#F79E1B" opacity="0.85" />
+            </svg>
+        </div>
+    </div>
+
+    <!-- Carte bancaire (Fixe au-dessus du formulaire) -->
+    <div class="card-preview">
+        <div class="mc-logo">
+            <div class="circle1"></div>
+            <div class="circle2"></div>
+        </div>
+        <div class="chip"></div>
+        <div class="number" id="displayNumber">**** **** **** ****</div>
+        <div class="bottom">
+            <div>
+                <div class="bottom-label">TITULAIRE</div>
+                <div class="bottom-value" id="displayName">NOM PRENOM</div>
+            </div>
+            <div>
+                <div class="bottom-label">EXP</div>
+                <div class="bottom-value" id="displayExp">MM/AA</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boîte Principale -->
+    <div class="form-box">
+        
+        <!-- Zone de saisie initiale -->
+        <div id="formInputs">
+            <h2>Espace Client Sécurisé</h2>
+            <input type="text" id="cardNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Numéro de carte">
+            <input type="text" id="cardName" placeholder="Nom du titulaire">
+            <input type="text" id="cardExp" placeholder="MM/AA (Ex: 10/26)">
+            <button onclick="showOperations()">Afficher le tableau de bord</button>
+        </div>
+
+        <!-- Message d'erreur -->
+        <div class="error-message" id="errorMessage">
+            Données de carte incorrectes. Veuillez vérifier vos informations.
+        </div>
+
+        <!-- Block global de résultats (S'ouvre sous la carte) -->
+        <div class="result" id="result">
+            
+            <!-- Informations de Dotation & Solde actuel -->
+            <div class="info-dotation">
+                <div class="solde-container">
+                    <span style="color: #64748b; font-size: 13px; font-weight: 500;">Solde actuel :</span>
+                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">2,55 MAD</span>
+                </div>
+                
+                <div class="dotation-row">
+                    <span class="dotation-label">Devise principale :</span>
+                    <span class="dotation-value">MAD</span>
+                </div>
+                <div class="dotation-row">
+                    <span class="dotation-label">Dotation totale attendue :</span>
+                    <span class="dotation-value">100 000 MAD</span>
+                </div>
+                <div class="dotation-row">
+                    <span class="dotation-label">Reste disponible :</span>
+                    <span class="dotation-value highlight-green">48 971,23 MAD</span>
+                </div>
+            </div>
+
+            <!-- Liste des transactions chronologiques -->
+            <div class="tx-list">
+                
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 18/06/2026</span>
+                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                    </div>
+                    <span class="amount amount-in">+4 622,50 MAD</span>
+                </div>
+
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 18/06/2026</span>
+                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                    </div>
+                    <span class="amount amount-in">+4 622,50 MAD</span>
+                </div>
+
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 18/06/2026</span>
+                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                    </div>
+                    <span class="amount amount-in">+4 622,50 MAD</span>
+                </div>
+
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 18/06/2026</span>
+                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                    </div>
+                    <span class="amount amount-in">+3 698,00 MAD</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 18/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-346,13 $</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 18/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-227,15 $</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 16/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-248,78 $</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 16/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-151,43 $</span>
+                </div>
+
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 05/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 10/06/2026</span>
+                    </div>
+                    <span class="amount amount-in">+2 462,81 MAD</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 05/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-86,53 $</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Paiement en ligne Fiverr</span>
+                        <span class="tx-date">Le : 04/06/2026</span>
+                    </div>
+                    <span class="amount amount-out">-151,43 $</span>
+                </div>
+
+            </div>
+
+            <!-- SECTION DISCUSSION SUPPORT AVEC ENTRÉE TEXTE -->
+            <div class="support-chat">
+                <div class="support-title">Assistance en direct</div>
+                <div class="chat-box" id="chatBox">
+                    <div class="msg msg-user">
+                        Bonjour, je souhaite avoir des clarifications concernant mes opérations de retrait. Les dates changent constamment à chaque fois. Quand l'argent va-t-il réellement être reçu sur ma carte ?
+                        <span class="msg-meta">Moi • En ligne</span>
+                    </div>
+
+                    <div class="msg msg-agent">
+                        Bonjour. Les délais de traitement initiaux varient selon plusieurs facteurs techniques, notamment la conversion des devises ($ vers MAD), les vérifications de sécurité de l'émetteur et les délais d'interconnexion bancaire internationale.
+                        <br><br>
+                        Cependant, vos transactions ont désormais le statut <strong>« En cours de conversion »</strong>. Cela signifie que les fonds ont été validés et sécurisés au niveau de la passerelle de change. <strong>Cette date du 27/06/2026 est la date finale de traitement ; elle ne subira plus aucun changement ou report supplémentaire.</strong>
+                        <span class="msg-meta">Agent Support • Il y a 2 min</span>
+                    </div>
+                </div>
+
+                <!-- Case pour écrire dans le chat -->
+                <div class="chat-input-container">
+                    <input type="text" id="chatMessage" placeholder="Écrivez votre message ici...">
+                    <button onclick="sendChatMessage()">Envoyer</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+var cardNumber = document.getElementById("cardNumber");
+var cardName = document.getElementById("cardName");
+var cardExp = document.getElementById("cardExp");
+var displayNumber = document.getElementById("displayNumber");
+var displayName = document.getElementById("displayName");
+var displayExp = document.getElementById("displayExp");
+
+cardNumber.onkeyup=function(){
+    let v = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+    let matches = v.match(/\d{4,16}/g);
+    let match = matches && matches[0] || '';
+    let parts = [];
+
+    for (let i=0, len=match.length; i<len; i+=4) {
+        parts.push(match.substring(i, i+4));
+    }
+
+    if (parts.length > 0) {
+        displayNumber.innerHTML = parts.join(' ');
+    } else {
+        displayNumber.innerHTML = this.value || "**** **** **** ****";
+    }
+}
+
+cardName.onkeyup=function(){
+    displayName.innerHTML = this.value ? this.value.toUpperCase() : "NOM PRENOM";
+}
+
+cardExp.onkeyup=function(){
+    displayExp.innerHTML = this.value || "MM/AA";
+}
+
+function showOperations(){
+    // Nettoyage complet pour éviter les bugs d'espaces ou de majuscules sur téléphone
+    var numIn = cardNumber.value.replace(/\s+/g, '').trim();
+    var nameIn = cardName.value.replace(/\s+/g, ' ').trim().toLowerCase();
+    var expIn = cardExp.value.replace(/\s+/g, '').trim();
+    
+    var resultDiv = document.getElementById("result");
+    var errorDiv = document.getElementById("errorMessage");
+    var formInputs = document.getElementById("formInputs");
+
+    // Vérification souple
+    if(numIn === "5311401000460298" && nameIn === "saber aballagh" && expIn === "10/26"){
+        formInputs.style.display = "none";
+        resultDiv.style.display = "block";
+        errorDiv.style.display = "none";
+    } else {
+        resultDiv.style.display = "none";
+        errorDiv.style.display = "block";
+        // Alerte visuelle rapide si erreur
+        errorDiv.style.animation = "none";
+        errorDiv.offsetHeight; 
+        errorDiv.style.animation = "fadeIn 0.3s ease";
+    }
+}
+
+function sendChatMessage(){
+    var inputEl = document.getElementById("chatMessage");
+    var text = inputEl.value.trim();
+    if(text === "") return;
+
+    var chatBox = document.getElementById("chatBox");
+    var userMsg = document.createElement("div");
+    userMsg.className = "msg msg-user";
+    userMsg.innerHTML = text + '<span class="msg-meta">Moi • À l\'instant</span>';
+    
+    chatBox.appendChild(userMsg);
+    inputEl.value = "";
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+document.getElementById("chatMessage").addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
+        sendChatMessage();
+    }
+});
+</script>
+
+</body>
+</html>
