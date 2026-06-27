@@ -1,469 +1,509 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MasterSecure Mobile Premium</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>MasterSecure Mobile Premium</title>
 
-        body {
-            min-height: 100vh;
-            background: #0f111a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-            position: relative;
-        }
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+}
 
-        body::before, body::after {
-            content: "";
-            position: absolute;
-            width: 300px;
-            height: 300px;
-            border-radius: 50%;
-            z-index: 0;
-            filter: blur(100px);
-            opacity: 0.15;
-        }
-        body::before {
-            background: #ff5500;
-            top: 10%;
-            left: -100px;
-        }
-        body::after {
-            background: #00ff95;
-            bottom: 10%;
-            right: -100px;
-        }
+body{
+    min-height:100vh;
+    background: #0f111a;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start; /* Aligne le contenu vers le haut pour permettre le défilement */
+    padding:40px 20px; /* Espace pour respirer en haut et en bas sur mobile */
+    overflow-y: auto; /* Active le défilement vertical complet */
+    overflow-x: hidden;
+    position: relative;
+}
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            z-index: 1;
-        }
+/* Arrière-plan design avec cercles lumineux */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    z-index: 0;
+    filter: blur(100px);
+    opacity: 0.15;
+}
+body::before {
+    background: #ff5500;
+    top: 10%;
+    left: -100px;
+}
+body::after {
+    background: #00ff95;
+    bottom: 10%;
+    right: -100px;
+}
 
-        .header-logos {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            background: rgba(255, 255, 255, 0.03);
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-        }
+.container{
+    width:100%;
+    max-width:480px;
+    z-index: 1;
+    margin: 0 auto;
+}
 
-        .logo-text {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 10px;
-            letter-spacing: 2px;
-            font-weight: bold;
-            text-transform: uppercase;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            padding-right: 15px;
-        }
+/* EN-TÊTE LOGO MASTERCARD UNIQUEMENT */
+.header-logos {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 14px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+}
 
-        .logo-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 26px;
-        }
+.logo-text {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    text-transform: uppercase;
+    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    padding-right: 15px;
+}
 
-        .card-preview {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 1.58 / 1;
-            margin: 0 auto 30px auto;
-            border-radius: 24px;
-            overflow: hidden;
-            background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border: 1px solid rgba(255,255,255,0.2);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
-            padding: 25px;
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 26px;
+}
 
-        .mc-logo {
-            position: absolute;
-            right: 25px;
-            top: 25px;
-            display: flex;
-        }
+/* CARTE BANCAIRE PREMIUM */
+.card-preview{
+    position:relative;
+    width:100%;
+    aspect-ratio: 1.58 / 1;
+    margin:0 auto 30px auto;
+    border-radius:24px;
+    overflow:hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.03) 100%);
+    backdrop-filter:blur(30px);
+    -webkit-backdrop-filter:blur(30px);
+    border: 1px solid rgba(255,255,255,0.2);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.2);
+    padding: 25px;
+    color:white;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
 
-        .circle1 {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #EB001B;
-        }
+.mc-logo{
+    position:absolute;
+    right: 25px;
+    top: 25px;
+    display:flex;
+}
 
-        .circle2 {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: #F79E1B;
-            margin-left: -14px;
-            opacity: 0.9;
-        }
+.circle1{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#EB001B;
+}
 
-        .chip {
-            width: 48px;
-            height: 35px;
-            background: linear-gradient(135deg, #f2cb6c 0%, #c69331 100%);
-            border-radius: 8px;
-            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
-            position: relative;
-        }
+.circle2{
+    width:36px;
+    height:36px;
+    border-radius:50%;
+    background:#F79E1B;
+    margin-left:-14px;
+    opacity:0.9;
+}
 
-        .number {
-            font-size: 24px;
-            letter-spacing: 3px;
-            font-family: 'Courier New', monospace;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            margin: 15px 0;
-        }
+.chip{
+    width:48px;
+    height:35px;
+    background:linear-gradient(135deg, #f2cb6c 0%, #c69331 100%);
+    border-radius:8px;
+    box-shadow: inset 0 1px 2px rgba(255,255,255,0.4);
+    position: relative;
+}
 
-        .bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-        }
+.number{
+    font-size: 24px;
+    letter-spacing: 3px;
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+    margin: 15px 0;
+}
 
-        .bottom-label {
-            font-size: 9px;
-            opacity: 0.5;
-            letter-spacing: 1px;
-            margin-bottom: 2px;
-        }
+.bottom{
+    display:flex;
+    justify-content:space-between;
+    align-items: flex-end;
+}
 
-        .bottom-value {
-            font-size: 13px;
-            font-weight: 600;
-            letter-spacing: 0.5px;
-        }
+.bottom-label {
+    font-size:9px;
+    opacity: 0.5;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
 
-        .form-box {
-            width: 100%;
-            background: rgba(18, 22, 35, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-radius: 28px;
-            padding: 25px;
-            border: 1px solid rgba(255,255,255,0.07);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-        }
+.bottom-value {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
 
-        h2 {
-            color: white;
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
+/* BOÎTE DE FORMULAIRE */
+.form-box{
+    width: 100%;
+    background: rgba(18, 22, 35, 0.75);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+    border-radius:28px;
+    padding: 25px;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+}
 
-        input {
-            width: 100%;
-            padding: 16px 20px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            background: rgba(255,255,255,0.04);
-            color: white;
-            font-size: 15px;
-            outline: none;
-            transition: all 0.3s;
-        }
+h2{
+    color:white;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom:20px;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
 
-        input:focus {
-            background: rgba(255,255,255,0.08);
-            border-color: rgba(247, 158, 27, 0.5);
-            box-shadow: 0 0 15px rgba(247, 158, 27, 0.1);
-        }
+input{
+    width:100%;
+    padding:16px 20px;
+    margin-bottom:15px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius:16px;
+    background: rgba(255,255,255,0.04);
+    color:white;
+    font-size: 15px;
+    outline:none;
+    transition: all 0.3s;
+}
 
-        button {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 16px;
-            font-size: 15px;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            background: linear-gradient(90deg, #ff4500, #ff8c00);
-            box-shadow: 0 4px 20px rgba(255, 69, 0, 0.3);
-            transition: all 0.3s;
-        }
+input:focus {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(247, 158, 27, 0.5);
+    box-shadow: 0 0 15px rgba(247, 158, 27, 0.1);
+}
 
-        button:hover {
-            box-shadow: 0 6px 25px rgba(255, 69, 0, 0.45);
-        }
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:16px;
+    font-size:15px;
+    font-weight:bold;
+    color:white;
+    cursor:pointer;
+    background: linear-gradient(90deg, #ff4500, #ff8c00);
+    box-shadow: 0 4px 20px rgba(255, 69, 0, 0.3);
+    transition: all 0.3s;
+}
 
-        button:active {
-            transform: scale(0.98);
-        }
+button:hover {
+    box-shadow: 0 6px 25px rgba(255, 69, 0, 0.45);
+}
 
-        .error-message {
-            display: none;
-            background: rgba(235, 0, 27, 0.15);
-            color: #ff5252;
-            padding: 15px;
-            border-radius: 14px;
-            margin-top: 20px;
-            border: 1px solid rgba(235, 0, 27, 0.3);
-            font-weight: 600;
-            font-size: 13px;
-            text-align: center;
-        }
+button:active {
+    transform: scale(0.98);
+}
 
-        .result {
-            display: none;
-            margin-top: 10px;
-            animation: fadeIn 0.5s ease;
-        }
+/* SECTION ERREUR */
+.error-message {
+    display: none;
+    background: rgba(235, 0, 27, 0.15);
+    color: #ff5252;
+    padding: 15px;
+    border-radius: 14px;
+    margin-top: 20px;
+    border: 1px solid rgba(235, 0, 27, 0.3);
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+}
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+/* ZONE DE RÉSULTATS */
+.result{
+    display:none;
+    margin-top:10px;
+    animation: fadeIn 0.5s ease;
+}
 
-        .info-dotation {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 18px;
-            margin-bottom: 25px;
-        }
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
-        .solde-container {
-            background: linear-gradient(135deg, rgba(0, 255, 149, 0.12) 0%, rgba(0, 255, 149, 0.02) 100%);
-            border: 1px solid rgba(0, 255, 149, 0.25);
-            border-radius: 14px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* BLOC SOLDE & DOTATIONS DASHBOARD */
+.info-dotation {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 18px;
+    margin-bottom: 25px;
+}
 
-        .dotation-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            font-size: 13px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        }
+.solde-container {
+    background: linear-gradient(135deg, rgba(0, 255, 149, 0.12) 0%, rgba(0, 255, 149, 0.02) 100%);
+    border: 1px solid rgba(0, 255, 149, 0.25);
+    border-radius: 14px;
+    padding: 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .dotation-row:last-child {
-            border-bottom: none;
-        }
+/* STYLE DU BOUTON DE RETRAIT ET COMPTE À REBOURS */
+.btn-retrait {
+    background: linear-gradient(90deg, #00ff95, #00b36b);
+    color: #0f111a;
+    font-weight: 700;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0 4px 15px rgba(0, 255, 149, 0.2);
+}
+.btn-retrait:hover {
+    box-shadow: 0 6px 20px rgba(0, 255, 149, 0.35);
+}
 
-        .dotation-label {
-            color: #94a3b8;
-        }
+.countdown-box {
+    display: none;
+    background: rgba(255, 170, 0, 0.1);
+    border: 1px dashed rgba(255, 170, 0, 0.3);
+    padding: 12px;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 10px;
+    color: #ffaa00;
+    font-size: 13.5px;
+    font-weight: 600;
+    animation: fadeIn 0.4s ease;
+}
 
-        .dotation-value {
-            font-weight: 600;
-            color: #f1f5f9;
-        }
+.dotation-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
 
-        .highlight-green {
-            color: #00ff95 !important;
-            text-shadow: 0 0 10px rgba(0, 255, 149, 0.2);
-        }
+.dotation-row:last-child {
+    border-bottom: none;
+}
 
-        .tx-list {
-            max-height: 330px;
-            overflow-y: auto;
-            padding-right: 5px;
-            margin-bottom: 30px;
-        }
+.dotation-label {
+    color: #94a3b8;
+}
 
-        .tx-list::-webkit-scrollbar {
-            width: 4px;
-        }
-        .tx-list::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.1);
-            border-radius: 10px;
-        }
+.dotation-value {
+    font-weight: 600;
+    color: #f1f5f9;
+}
 
-        .transaction {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            padding: 16px;
-            border-radius: 16px;
-            margin-bottom: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: background 0.3s;
-        }
+.highlight-green {
+    color: #00ff95 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 149, 0.2);
+}
 
-        .transaction:hover {
-            background: rgba(255, 255, 255, 0.04);
-        }
+/* LISTE DES TRANSACTIONS ÉLÉGANTE */
+.tx-list {
+    max-height: 330px;
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-bottom: 30px;
+}
 
-        .tx-income {
-            border-left: 4px solid #00ff95; 
-        }
+.tx-list::-webkit-scrollbar {
+    width: 4px;
+}
+.tx-list::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+}
 
-        .tx-expense {
-            border-left: 4px solid #ff4500; 
-        }
+.transaction {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 16px;
+    border-radius: 16px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s;
+}
 
-        .tx-info {
-            display: flex;
-            flex-direction: column;
-        }
+.transaction:hover {
+    background: rgba(255, 255, 255, 0.04);
+}
 
-        .tx-title {
-            font-size: 13.5px;
-            font-weight: 600;
-            color: #f8fafc;
-        }
+.tx-income {
+    border-left: 4px solid #00ff95; 
+}
 
-        .tx-date {
-            font-size: 11px;
-            color: #64748b;
-            margin-top: 4px;
-        }
+.tx-expense {
+    border-left: 4px solid #ff4500; 
+}
 
-        .tx-eta {
-            font-size: 10.5px;
-            color: #ffaa00;
-            font-weight: 500;
-            margin-top: 3px;
-            line-height: 1.3;
-        }
+.tx-info {
+    display: flex;
+    flex-direction: column;
+}
 
-        .amount {
-            font-weight: 700;
-            font-size: 15px;
-            white-space: nowrap;
-        }
+.tx-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: #f8fafc;
+}
 
-        .amount-in {
-            color: #00ff95;
-        }
+.tx-date {
+    font-size: 11px;
+    color: #64748b;
+    margin-top: 4px;
+}
 
-        .amount-out {
-            color: #ff5252;
-        }
+.tx-eta {
+    font-size: 10.5px;
+    color: #ffaa00;
+    font-weight: 500;
+    margin-top: 3px;
+    line-height: 1.3;
+}
 
-        .support-chat {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 20px;
-            padding: 18px;
-            margin-top: 25px;
-        }
+.amount {
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+}
 
-        .support-title {
-            font-size: 13px;
-            font-weight: 700;
-            color: #94a3b8;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
+.amount-in {
+    color: #00ff95;
+}
 
-        .support-title::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #00ff95;
-            border-radius: 50%;
-            box-shadow: 0 0 8px #00ff95;
-        }
+.amount-out {
+    color: #ff5252;
+}
 
-        .chat-box {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-bottom: 15px;
-        }
+/* SECTION CHAT ASSISTANCE */
+.support-chat {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 20px;
+    padding: 18px;
+    margin-top: 25px;
+}
 
-        .msg {
-            max-width: 85%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 12.5px;
-            line-height: 1.4;
-        }
+.support-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
-        .msg-user {
-            background: rgba(255, 255, 255, 0.06);
-            color: #f1f5f9;
-            align-self: flex-end;
-            border-bottom-right-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.02);
-        }
+.support-title::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #00ff95;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00ff95;
+}
 
-        .msg-agent {
-            background: linear-gradient(135deg, rgba(247, 158, 27, 0.12) 0%, rgba(247, 158, 27, 0.03) 100%);
-            color: #ffb84d;
-            align-self: flex-start;
-            border-bottom-left-radius: 4px;
-            border: 1px solid rgba(247, 158, 27, 0.2);
-        }
+.chat-box {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 15px;
+}
 
-        .msg-meta {
-            font-size: 10px;
-            color: #64748b;
-            margin-top: 4px;
-            display: block;
-            font-weight: 500;
-        }
+.msg {
+    max-width: 85%;
+    padding: 12px 16px;
+    border-radius: 16px;
+    font-size: 12.5px;
+    line-height: 1.4;
+}
 
-        .msg-user .msg-meta {
-            text-align: right;
-        }
+.msg-user {
+    background: rgba(255, 255, 255, 0.06);
+    color: #f1f5f9;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+    border: 1px solid rgba(255,255,255,0.02);
+}
 
-        .chat-input-container {
-            display: flex;
-            gap: 10px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 15px;
-            margin-top: 5px;
-        }
+.msg-agent {
+    background: linear-gradient(135deg, rgba(247, 158, 27, 0.12) 0%, rgba(247, 158, 27, 0.03) 100%);
+    color: #ffb84d;
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+    border: 1px solid rgba(247, 158, 27, 0.2);
+}
 
-        .chat-input-container input {
-            margin-bottom: 0;
-            padding: 12px 16px;
-            font-size: 13px;
-            border-radius: 12px;
-        }
+.msg-meta {
+    font-size: 10px;
+    color: #64748b;
+    margin-top: 4px;
+    display: block;
+    font-weight: 500;
+}
 
-        .chat-input-container button {
-            width: auto;
-            padding: 0 20px;
-            font-size: 13px;
-            border-radius: 12px;
-            background: linear-gradient(90deg, #ff5500, #ff7700);
-            white-space: nowrap;
-        }
-    </style>
+.msg-user .msg-meta {
+    text-align: right;
+}
+
+/* INPUT DE SAISIE POUR LE CHAT SUPPORT */
+.chat-input-container {
+    display: flex;
+    gap: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding-top: 15px;
+    margin-top: 5px;
+}
+
+.chat-input-container input {
+    margin-bottom: 0;
+    padding: 12px 16px;
+    font-size: 13px;
+    border-radius: 12px;
+}
+
+.chat-input-container button {
+    width: auto;
+    padding: 0 20px;
+    font-size: 13px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, #ff5500, #ff7700);
+    white-space: nowrap;
+}
+</style>
 </head>
 <body>
 
@@ -499,6 +539,7 @@
     </div>
 
     <div class="form-box">
+        
         <div id="formInputs">
             <h2>Espace Client Sécurisé</h2>
             <input type="text" id="cardNumber" inputmode="numeric" pattern="[0-9]*" placeholder="Numéro de carte">
@@ -512,12 +553,19 @@
         </div>
 
         <div class="result" id="result">
+            
             <div class="info-dotation">
                 <div class="solde-container">
                     <span style="color: #64748b; font-size: 13px; font-weight: 500;">Solde actuel :</span>
-                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">2,55 MAD</span>
+                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">3 700,55 MAD</span>
                 </div>
-                <div class="dotation-row">
+                
+                <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteARebours()">Retrait sur compte</button>
+                <div class="countdown-box" id="countdownBox">
+                    Retrait disponible dans : <span id="countdownTimer">39h 41min 30s</span>
+                </div>
+                
+                <div class="dotation-row" style="margin-top: 15px;">
                     <span class="dotation-label">Devise principale :</span>
                     <span class="dotation-value">MAD</span>
                 </div>
@@ -532,6 +580,7 @@
             </div>
 
             <div class="tx-list">
+                
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
@@ -540,6 +589,7 @@
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
+
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
@@ -548,6 +598,7 @@
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
+
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
@@ -556,14 +607,16 @@
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
+
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
                         <span class="tx-date">Émis le : 18/06/2026</span>
-                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 27/06/2026</span>
                     </div>
                     <span class="amount amount-in">+3 698,00 MAD</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -571,6 +624,7 @@
                     </div>
                     <span class="amount amount-out">-346,13 $</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -578,6 +632,7 @@
                     </div>
                     <span class="amount amount-out">-227,15 $</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -585,6 +640,7 @@
                     </div>
                     <span class="amount amount-out">-248,78 $</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -592,6 +648,7 @@
                     </div>
                     <span class="amount amount-out">-151,43 $</span>
                 </div>
+
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
@@ -600,6 +657,7 @@
                     </div>
                     <span class="amount amount-in">+2 462,81 MAD</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -607,6 +665,7 @@
                     </div>
                     <span class="amount amount-out">-86,53 $</span>
                 </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement en ligne Fiverr</span>
@@ -614,6 +673,7 @@
                     </div>
                     <span class="amount amount-out">-151,43 $</span>
                 </div>
+
             </div>
 
             <div class="support-chat">
@@ -623,6 +683,7 @@
                         Bonjour, je souhaite avoir des clarifications concernant mes opérations de retrait. Les dates changent constamment à chaque fois. Quand l'argent va-t-il réellement être reçu sur ma carte ?
                         <span class="msg-meta">Moi • En ligne</span>
                     </div>
+
                     <div class="msg msg-agent">
                         Bonjour. Les délais de traitement initiaux varient selon plusieurs facteurs techniques, notamment la conversion des devises ($ vers MAD), les vérifications de sécurité de l'émetteur et les délais d'interconnexion bancaire internationale.
                         <br><br>
@@ -636,8 +697,10 @@
                     <button onclick="sendChatMessage()">Envoyer</button>
                 </div>
             </div>
+
         </div>
     </div>
+
 </div>
 
 <script>
@@ -648,14 +711,18 @@ var displayNumber = document.getElementById("displayNumber");
 var displayName = document.getElementById("displayName");
 var displayExp = document.getElementById("displayExp");
 
+var intervalleId;
+
 cardNumber.onkeyup=function(){
     let v = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
     let matches = v.match(/\d{4,16}/g);
     let match = matches && matches[0] || '';
     let parts = [];
+
     for (let i=0, len=match.length; i<len; i+=4) {
         parts.push(match.substring(i, i+4));
     }
+
     if (parts.length > 0) {
         displayNumber.innerHTML = parts.join(' ');
     } else {
@@ -684,14 +751,76 @@ function showOperations(){
         formInputs.style.display = "none";
         resultDiv.style.display = "block";
         errorDiv.style.display = "none";
+        
+        // Vérifie si le compte à rebours est déjà actif
+        verifierCompteAReboursExistant();
     } else {
         resultDiv.style.display = "none";
-        errorDiv.style.block = "block";
+        errorDiv.style.display = "block";
         errorDiv.style.animation = "none";
         errorDiv.offsetHeight; 
         errorDiv.style.animation = "fadeIn 0.3s ease";
     }
 }
+
+/* --- LOGIQUE DU COMPTE À REBOURS PERSISTANT --- */
+
+function demarrerCompteARebours() {
+    // 39h 41min 30s converti en secondes globales
+    var tempsAjouter = (39 * 60 * 60) + (41 * 60) + 30; 
+    var dateFin = new Date().getTime() + (tempsAjouter * 1000);
+
+    // Stockage persistant local
+    localStorage.setItem("dateFinRetrait", dateFin);
+
+    document.getElementById("btnRetrait").style.display = "none";
+    document.getElementById("countdownBox").style.display = "block";
+
+    lancerMiseAJour(dateFin);
+}
+
+function verifierCompteAReboursExistant() {
+    var dateFinStockee = localStorage.getItem("dateFinRetrait");
+    
+    if (dateFinStockee) {
+        var maintenant = new Date().getTime();
+        
+        if (dateFinStockee > maintenant) {
+            document.getElementById("btnRetrait").style.display = "none";
+            document.getElementById("countdownBox").style.display = "block";
+            lancerMiseAJour(parseInt(dateFinStockee));
+        } else {
+            localStorage.removeItem("dateFinRetrait");
+        }
+    }
+}
+
+function lancerMiseAJour(dateCible) {
+    if(intervalleId) clearInterval(intervalleId);
+
+    function actualiser() {
+        var maintenant = new Date().getTime();
+        var distance = dateCible - maintenant;
+
+        if (distance < 0) {
+            clearInterval(intervalleId);
+            document.getElementById("countdownBox").innerHTML = "Retrait disponible !";
+            localStorage.removeItem("dateFinRetrait");
+            return;
+        }
+
+        var heures = Math.floor(distance / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        var secondes = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdownTimer").innerHTML = heures + "h " + minutes + "min " + secondes + "s";
+    }
+
+    actualiser();
+    intervalleId = setInterval(actualiser, 1000);
+}
+
+/* --- FIN DU COMPTE À REBOURS --- */
 
 function sendChatMessage(){
     var inputEl = document.getElementById("chatMessage");
@@ -715,6 +844,8 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
     }
 });
 </script>
+
 </body>
 </html>
+
 
