@@ -18,14 +18,13 @@ body{
     background: #0f111a;
     display:flex;
     justify-content:center;
-    align-items:flex-start; /* Aligne le contenu vers le haut pour permettre le défilement */
-    padding:40px 20px; /* Espace pour respirer en haut et en bas sur mobile */
-    overflow-y: auto; /* Active le défilement vertical complet */
+    align-items:flex-start; 
+    padding:40px 20px; 
+    overflow-y: auto; 
     overflow-x: hidden;
     position: relative;
 }
 
-/* Arrière-plan design avec cercles lumineux */
 body::before, body::after {
     content: "";
     position: absolute;
@@ -54,7 +53,6 @@ body::after {
     margin: 0 auto;
 }
 
-/* EN-TÊTE LOGO MASTERCARD UNIQUEMENT */
 .header-logos {
     display: flex;
     justify-content: center;
@@ -85,7 +83,6 @@ body::after {
     height: 26px;
 }
 
-/* CARTE BANCAIRE PREMIUM */
 .card-preview{
     position:relative;
     width:100%;
@@ -165,7 +162,6 @@ body::after {
     letter-spacing: 0.5px;
 }
 
-/* BOÎTE DE FORMULAIRE */
 .form-box{
     width: 100%;
     background: rgba(18, 22, 35, 0.75);
@@ -227,7 +223,6 @@ button:active {
     transform: scale(0.98);
 }
 
-/* SECTION ERREUR */
 .error-message {
     display: none;
     background: rgba(235, 0, 27, 0.15);
@@ -241,7 +236,6 @@ button:active {
     text-align: center;
 }
 
-/* ZONE DE RÉSULTATS */
 .result{
     display:none;
     margin-top:10px;
@@ -253,7 +247,6 @@ button:active {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* BLOC SOLDE & DOTATIONS DASHBOARD */
 .info-dotation {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -273,7 +266,6 @@ button:active {
     align-items: center;
 }
 
-/* STYLE DU BOUTON DE RETRAIT ET COMPTE À REBOURS */
 .btn-retrait {
     background: linear-gradient(90deg, #00ff95, #00b36b);
     color: #0f111a;
@@ -326,7 +318,6 @@ button:active {
     text-shadow: 0 0 10px rgba(0, 255, 149, 0.2);
 }
 
-/* LISTE DES TRANSACTIONS ÉLÉGANTE */
 .tx-list {
     max-height: 330px;
     overflow-y: auto;
@@ -405,7 +396,6 @@ button:active {
     color: #ff5252;
 }
 
-/* SECTION CHAT ASSISTANCE */
 .support-chat {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -479,7 +469,6 @@ button:active {
     text-align: right;
 }
 
-/* INPUT DE SAISIE POUR LE CHAT SUPPORT */
 .chat-input-container {
     display: flex;
     gap: 10px;
@@ -557,12 +546,12 @@ button:active {
             <div class="info-dotation">
                 <div class="solde-container">
                     <span style="color: #64748b; font-size: 13px; font-weight: 500;">Solde actuel :</span>
-                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">3 700,55 MAD</span>
+                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">17 568,05 MAD</span>
                 </div>
                 
-                <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteARebours()">Retrait sur compte</button>
+                <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteAReboursManual()">Retrait sur compte</button>
                 <div class="countdown-box" id="countdownBox">
-                    Retrait disponible dans : <span id="countdownTimer">39h 41min 30s</span>
+                    Retrait disponible dans : <span id="countdownTimer">48h 00min 00s</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-top: 15px;">
@@ -738,6 +727,17 @@ cardExp.onkeyup=function(){
     displayExp.innerHTML = this.value || "MM/AA";
 }
 
+// LOGIQUE CORRIGÉE : Si l'utilisateur charge la page avec un ancien cookie corrompu (ex: 3 heures restantes), 
+// on nettoie d'office la mémoire pour forcer le redémarrage à 48 heures.
+if (localStorage.getItem("dateFinRetrait")) {
+    var stocke = parseInt(localStorage.getItem("dateFinRetrait"));
+    var maintenant = new Date().getTime();
+    // Si la valeur stockée donne moins de 40 heures (preuve que c'est le vieux bug des 3h), on efface
+    if ((stocke - maintenant) < (40 * 60 * 60 * 1000)) {
+        localStorage.removeItem("dateFinRetrait");
+    }
+}
+
 function showOperations(){
     var numIn = cardNumber.value.replace(/\s+/g, '').trim();
     var nameIn = cardName.value.replace(/\s+/g, ' ').trim().toLowerCase();
@@ -752,8 +752,21 @@ function showOperations(){
         resultDiv.style.display = "block";
         errorDiv.style.display = "none";
         
-        // Vérifie si le compte à rebours est déjà actif
-        verifierCompteAReboursExistant();
+        var dateFinStockee = localStorage.getItem("dateFinRetrait");
+        var maintenant = new Date().getTime();
+        
+        // S'il n'y a rien en mémoire, on lance les 48h exactes
+        if (!dateFinStockee || parseInt(dateFinStockee) <= maintenant) {
+            var tempsAjouter = 48 * 60 * 60; 
+            var dateFin = maintenant + (tempsAjouter * 1000);
+            localStorage.setItem("dateFinRetrait", dateFin);
+            dateFinStockee = dateFin;
+        }
+        
+        document.getElementById("btnRetrait").style.display = "none";
+        document.getElementById("countdownBox").style.display = "block";
+        lancerMiseAJour(parseInt(dateFinStockee));
+        
     } else {
         resultDiv.style.display = "none";
         errorDiv.style.display = "block";
@@ -763,36 +776,13 @@ function showOperations(){
     }
 }
 
-/* --- LOGIQUE DU COMPTE À REBOURS PERSISTANT --- */
-
-function demarrerCompteARebours() {
-    // 39h 41min 30s converti en secondes globales
-    var tempsAjouter = (39 * 60 * 60) + (41 * 60) + 30; 
+function demarrerCompteAReboursManual() {
+    var tempsAjouter = 48 * 60 * 60; 
     var dateFin = new Date().getTime() + (tempsAjouter * 1000);
-
-    // Stockage persistant local
     localStorage.setItem("dateFinRetrait", dateFin);
-
     document.getElementById("btnRetrait").style.display = "none";
     document.getElementById("countdownBox").style.display = "block";
-
     lancerMiseAJour(dateFin);
-}
-
-function verifierCompteAReboursExistant() {
-    var dateFinStockee = localStorage.getItem("dateFinRetrait");
-    
-    if (dateFinStockee) {
-        var maintenant = new Date().getTime();
-        
-        if (dateFinStockee > maintenant) {
-            document.getElementById("btnRetrait").style.display = "none";
-            document.getElementById("countdownBox").style.display = "block";
-            lancerMiseAJour(parseInt(dateFinStockee));
-        } else {
-            localStorage.removeItem("dateFinRetrait");
-        }
-    }
 }
 
 function lancerMiseAJour(dateCible) {
@@ -820,8 +810,6 @@ function lancerMiseAJour(dateCible) {
     intervalleId = setInterval(actualiser, 1000);
 }
 
-/* --- FIN DU COMPTE À REBOURS --- */
-
 function sendChatMessage(){
     var inputEl = document.getElementById("chatMessage");
     var text = inputEl.value.trim();
@@ -847,5 +835,6 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
