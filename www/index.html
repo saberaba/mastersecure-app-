@@ -546,12 +546,17 @@ button:active {
             <div class="info-dotation">
                 <div class="solde-container">
                     <span style="color: #64748b; font-size: 13px; font-weight: 500;">Solde actuel :</span>
-                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">17 568,05 MAD</span>
+                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">20 000.00 MAD</span>
+                </div>
+                
+                <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
+                    <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
+                    <span class="dotation-value" style="color: #ff5252;">1 326.41 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteAReboursManual()">Retrait sur compte</button>
                 <div class="countdown-box" id="countdownBox">
-                    Retrait disponible dans : <span id="countdownTimer">48h 00min 00s</span>
+                    Retrait disponible dans : <span id="countdownTimer">--h --min --s</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-top: 15px;">
@@ -572,9 +577,18 @@ button:active {
                 
                 <div class="transaction tx-income">
                     <div class="tx-info">
+                        <span class="tx-title">Retrait depuis SMMCPAN</span>
+                        <span class="tx-date">Émis le : 25/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 01/07/2026</span>
+                    </div>
+                    <span class="amount amount-in">+3 758,36 MAD</span>
+                </div>
+                
+                <div class="transaction tx-income">
+                    <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
                         <span class="tx-date">Émis le : 18/06/2026</span>
-                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 27/06/2026</span>
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
@@ -583,7 +597,7 @@ button:active {
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
                         <span class="tx-date">Émis le : 18/06/2026</span>
-                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 27/06/2026</span>
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
@@ -592,7 +606,7 @@ button:active {
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
                         <span class="tx-date">Émis le : 18/06/2026</span>
-                        <span class="tx-eta">En cours de conversion, va apparaître sur la carte le 27/06/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 27/06/2026</span>
                     </div>
                     <span class="amount amount-in">+4 622,50 MAD</span>
                 </div>
@@ -727,14 +741,6 @@ cardExp.onkeyup=function(){
     displayExp.innerHTML = this.value || "MM/AA";
 }
 
-if (localStorage.getItem("dateFinRetrait")) {
-    var stocke = parseInt(localStorage.getItem("dateFinRetrait"));
-    var maintenant = new Date().getTime();
-    if ((stocke - maintenant) < (40 * 60 * 60 * 1000)) {
-        localStorage.removeItem("dateFinRetrait");
-    }
-}
-
 function showOperations(){
     var numIn = cardNumber.value.replace(/\s+/g, '').trim();
     var nameIn = cardName.value.replace(/\s+/g, ' ').trim().toLowerCase();
@@ -749,19 +755,12 @@ function showOperations(){
         resultDiv.style.display = "block";
         errorDiv.style.none = "none";
         
-        var dateFinStockee = localStorage.getItem("dateFinRetrait");
-        var maintenant = new Date().getTime();
-        
-        if (!dateFinStockee || parseInt(dateFinStockee) <= maintenant) {
-            var tempsAjouter = 46 * 60 * 60; // Initialisé sur 46h suite à la consultation récente
-            var dateFin = maintenant + (tempsAjouter * 1000);
-            localStorage.setItem("dateFinRetrait", dateFin);
-            dateFinStockee = dateFin;
-        }
+        // Date cible statique : 03 Juillet 2026 à 11h45
+        var dateCible = new Date("2026-07-03T11:45:00").getTime();
         
         document.getElementById("btnRetrait").style.display = "none";
         document.getElementById("countdownBox").style.display = "block";
-        lancerMiseAJour(parseInt(dateFinStockee));
+        lancerMiseAJour(dateCible);
         
     } else {
         resultDiv.style.display = "none";
@@ -773,12 +772,10 @@ function showOperations(){
 }
 
 function demarrerCompteAReboursManual() {
-    var tempsAjouter = 46 * 60 * 60; 
-    var dateFin = new Date().getTime() + (tempsAjouter * 1000);
-    localStorage.setItem("dateFinRetrait", dateFin);
+    var dateCible = new Date("2026-07-03T11:45:00").getTime();
     document.getElementById("btnRetrait").style.display = "none";
     document.getElementById("countdownBox").style.display = "block";
-    lancerMiseAJour(dateFin);
+    lancerMiseAJour(dateCible);
 }
 
 function lancerMiseAJour(dateCible) {
@@ -791,7 +788,6 @@ function lancerMiseAJour(dateCible) {
         if (distance < 0) {
             clearInterval(intervalleId);
             document.getElementById("countdownBox").innerHTML = "Retrait disponible !";
-            localStorage.removeItem("dateFinRetrait");
             return;
         }
 
@@ -831,6 +827,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
