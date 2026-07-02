@@ -755,8 +755,8 @@ function showOperations(){
         resultDiv.style.display = "block";
         errorDiv.style.none = "none";
         
-        // Date cible statique : 03 Juillet 2026 à 11h45
-        var dateCible = new Date("2026-07-03T11:45:00").getTime();
+        // Date cible configurée pour le vendredi 03 Juillet 2026 à 21h30
+        var dateCible = new Date("2026-07-03T21:30:00").getTime();
         
         document.getElementById("btnRetrait").style.display = "none";
         document.getElementById("countdownBox").style.display = "block";
@@ -772,7 +772,8 @@ function showOperations(){
 }
 
 function demarrerCompteAReboursManual() {
-    var dateCible = new Date("2026-07-03T11:45:00").getTime();
+    // Date cible configurée pour le vendredi 03 Juillet 2026 à 21h30
+    var dateCible = new Date("2026-07-03T21:30:00").getTime();
     document.getElementById("btnRetrait").style.display = "none";
     document.getElementById("countdownBox").style.display = "block";
     lancerMiseAJour(dateCible);
@@ -827,6 +828,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
