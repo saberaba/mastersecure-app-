@@ -492,6 +492,33 @@ button:active {
     background: linear-gradient(90deg, #ff5500, #ff7700);
     white-space: nowrap;
 }
+
+.retrait-form-container {
+    display: none;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 16px;
+    padding: 15px;
+    margin-top: 12px;
+    animation: fadeIn 0.4s ease;
+}
+.bank-info-box {
+    background: rgba(0, 255, 149, 0.05);
+    border: 1px solid rgba(0, 255, 149, 0.15);
+    padding: 12px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-size: 12.5px;
+    color: #e2e8f0;
+}
+.retrait-error {
+    color: #ff5252;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: -5px;
+    margin-bottom: 10px;
+    display: none;
+}
 </style>
 </head>
 <body>
@@ -546,21 +573,32 @@ button:active {
             <div class="info-dotation">
                 <div class="solde-container">
                     <span style="color: #64748b; font-size: 13px; font-weight: 500;">Solde actuel :</span>
-                    <span class="amount-in" style="font-size: 20px; font-weight: 800;">20 000.00 MAD</span>
+                    <span class="amount-in" id="soldeAffiche" style="font-size: 20px; font-weight: 800;">20 000.00 MAD</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">8 814.64 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">8 814.64MAD</span>
                 </div>
                 
-                <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteAReboursManual()">Retrait sur compte</button>
+                <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()">Retrait sur compte</button>
+                
+                <div class="retrait-form-container" id="retraitFormContainer">
+                    <div class="bank-info-box">
+                        <strong>Compte de destination :</strong><br>
+                        Attijariwafa bank •••• 9267
+                    </div>
+                    <input type="number" id="montantRetrait" placeholder="Montant (Max 3000 MAD)" max="3000" style="margin-bottom: 10px; padding: 12px 15px; font-size: 14px;">
+                    <div class="retrait-error" id="retraitError">Vous ne pouvez pas retirer plus de 3000 MAD.</div>
+                    <button class="btn-retrait" onclick="executerRetrait()" style="margin: 0; padding: 12px;">Confirmer le retrait</button>
+                </div>
+
                 <div class="countdown-box" id="countdownBox">
-                    Retrait disponible dans : <span id="countdownTimer">13h 00min 00s</span>
+                    Prochain retrait disponible dans : <span id="countdownTimer">24h 00min 00s</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-top: 15px;">
-                    <span class="dotation-label">Devise principale :</span>
+                    <span class="dotlabel">Devise principale :</span>
                     <span class="dotation-value">MAD</span>
                 </div>
                 <div class="dotation-row">
@@ -569,11 +607,11 @@ button:active {
                 </div>
                 <div class="dotation-row">
                     <span class="dotation-label">Reste disponible :</span>
-                    <span class="dotation-value highlight-green">48 971,23 MAD</span>
+                    <span class="dotation-value highlight-green" id="resteDisponibleAffiche">48 971,23 MAD</span>
                 </div>
             </div>
 
-            <div class="tx-list">
+            <div class="tx-list" id="transactionList">
                 
                 <div class="transaction tx-income">
                     <div class="tx-info">
@@ -715,6 +753,8 @@ var displayName = document.getElementById("displayName");
 var displayExp = document.getElementById("displayExp");
 
 var intervalleId;
+var soldeActuel = 20000.00;
+var resteDisponible = 48971.23;
 
 cardNumber.onkeyup=function(){
     let v = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -753,15 +793,11 @@ function showOperations(){
     if(numIn === "5311401000460298" && nameIn === "saber aballagh" && expIn === "10/26"){
         formInputs.style.display = "none";
         resultDiv.style.display = "block";
-        errorDiv.style.none = "block";
-        errorDiv.style.display = "none";
+        errorDiv.style.none = "none";
         
-        // Calcule dynamiquement l'instant actuel + 13 heures
-        var dateCible = new Date().getTime() + (13 * 60 * 60 * 1000);
-        
-        document.getElementById("btnRetrait").style.display = "none";
-        document.getElementById("countdownBox").style.display = "block";
-        lancerMiseAJour(dateCible);
+        document.getElementById("btnRetrait").style.display = "block";
+        document.getElementById("retraitFormContainer").style.display = "none";
+        document.getElementById("countdownBox").style.display = "none";
         
     } else {
         resultDiv.style.display = "none";
@@ -772,13 +808,64 @@ function showOperations(){
     }
 }
 
-function demarrerCompteAReboursManual() {
-    // Calcule dynamiquement l'instant actuel + 13 heures
-    var dateCible = new Date().getTime() + (13 * 60 * 60 * 1000);
-    
+function afficherFormulaireRetrait() {
     document.getElementById("btnRetrait").style.display = "none";
+    document.getElementById("retraitFormContainer").style.display = "block";
+    document.getElementById("retraitError").style.display = "none";
+}
+
+function executerRetrait() {
+    var montantInput = document.getElementById("montantRetrait");
+    var montant = parseFloat(montantInput.value);
+    var errorDiv = document.getElementById("retraitError");
+
+    if (isNaN(montant) || montant <= 0) {
+        errorDiv.innerHTML = "Veuillez saisir un montant valide.";
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    if (montant > 3000) {
+        errorDiv.innerHTML = "Vous ne pouvez pas retirer plus de 3000 MAD.";
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    if (montant > soldeActuel) {
+        errorDiv.innerHTML = "Solde insuffisant pour effectuer ce retrait.";
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    errorDiv.style.display = "none";
+    document.getElementById("retraitFormContainer").style.display = "none";
+    
+    soldeActuel -= montant;
+    resteDisponible -= montant;
+    document.getElementById("soldeAffiche").innerHTML = soldeActuel.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MAD";
+    document.getElementById("resteDisponibleAffiche").innerHTML = resteDisponible.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MAD";
+
+    var txList = document.getElementById("transactionList");
+    var nouvelleTx = document.createElement("div");
+    nouvelleTx.className = "transaction tx-expense";
+    
+    nouvelleTx.innerHTML = `
+        <div class="tx-info">
+            <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+            <span class="tx-date">Émis le : 06/07/2026</span>
+            <span class="tx-eta">Sur compte attendu le : 07/07/2026 (dans 24h)</span>
+        </div>
+        <span class="amount amount-out">-${montant.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} MAD</span>
+    `;
+    
+    txList.insertBefore(nouvelleTx, txList.firstChild);
+
+    var tempsDecompte = 24 * 60 * 60 * 1000; 
+    var dateCible = new Date().getTime() + tempsDecompte;
+    
     document.getElementById("countdownBox").style.display = "block";
     lancerMiseAJour(dateCible);
+    montantInput.value = "";
 }
 
 function lancerMiseAJour(dateCible) {
@@ -790,7 +877,8 @@ function lancerMiseAJour(dateCible) {
 
         if (distance < 0) {
             clearInterval(intervalleId);
-            document.getElementById("countdownBox").innerHTML = "Retrait disponible !";
+            document.getElementById("countdownBox").style.display = "none";
+            document.getElementById("btnRetrait").style.display = "block";
             return;
         }
 
@@ -830,6 +918,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
