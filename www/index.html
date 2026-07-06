@@ -551,12 +551,12 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">8 814.64MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">8 814.64 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="demarrerCompteAReboursManual()">Retrait sur compte</button>
                 <div class="countdown-box" id="countdownBox">
-                    Retrait disponible dans : <span id="countdownTimer">--h --min --s</span>
+                    Retrait disponible dans : <span id="countdownTimer">13h 00min 00s</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-top: 15px;">
@@ -753,10 +753,11 @@ function showOperations(){
     if(numIn === "5311401000460298" && nameIn === "saber aballagh" && expIn === "10/26"){
         formInputs.style.display = "none";
         resultDiv.style.display = "block";
+        errorDiv.style.none = "block";
         errorDiv.style.display = "none";
         
-        // Date cible fixe : 06 Juillet 2026 à 00:45:00
-        var dateCible = new Date("2026-07-06T00:45:00").getTime();
+        // Calcule dynamiquement l'instant actuel + 13 heures
+        var dateCible = new Date().getTime() + (13 * 60 * 60 * 1000);
         
         document.getElementById("btnRetrait").style.display = "none";
         document.getElementById("countdownBox").style.display = "block";
@@ -772,8 +773,8 @@ function showOperations(){
 }
 
 function demarrerCompteAReboursManual() {
-    // Date cible fixe : 06 Juillet 2026 à 00:45:00
-    var dateCible = new Date("2026-07-06T00:45:00").getTime();
+    // Calcule dynamiquement l'instant actuel + 13 heures
+    var dateCible = new Date().getTime() + (13 * 60 * 60 * 1000);
     
     document.getElementById("btnRetrait").style.display = "none";
     document.getElementById("countdownBox").style.display = "block";
@@ -829,6 +830,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
