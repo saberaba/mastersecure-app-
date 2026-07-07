@@ -578,10 +578,10 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">8 814.64MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">12 156,94 MAD</span>
                 </div>
                 
-                <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()">Retrait sur compte</button>
+                <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
                 
                 <div class="retrait-form-container" id="retraitFormContainer">
                     <div class="bank-info-box">
@@ -593,8 +593,8 @@ button:active {
                     <button class="btn-retrait" onclick="executerRetrait()" style="margin: 0; padding: 12px;">Confirmer le retrait</button>
                 </div>
 
-                <div class="countdown-box" id="countdownBox">
-                    Prochain retrait disponible dans : <span id="countdownTimer">24h 00min 00s</span>
+                <div class="countdown-box" id="countdownBox" style="display: block;">
+                    Prochain retrait disponible dans : <span id="countdownTimer">--h --min --s</span>
                 </div>
                 
                 <div class="dotation-row" style="margin-top: 15px;">
@@ -613,6 +613,23 @@ button:active {
 
             <div class="tx-list" id="transactionList">
                 
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Recharge effectuée par Memphis Doku</span>
+                        <span class="tx-date">Émis le : 07/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 07/07/2026</span>
+                    </div>
+                    <span class="amount amount-in">+6 342,30 MAD</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+                        <span class="tx-date">Le : 06/07/2026</span>
+                    </div>
+                    <span class="amount amount-out">-3 000,00 MAD</span>
+                </div>
+
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Recharge effectuée par Memphis Doku</span>
@@ -754,7 +771,6 @@ var displayExp = document.getElementById("displayExp");
 
 var intervalleId;
 var soldeActuel = 20000.00;
-var resteDisponible = 48971.23;
 
 cardNumber.onkeyup=function(){
     let v = this.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
@@ -795,9 +811,12 @@ function showOperations(){
         resultDiv.style.display = "block";
         errorDiv.style.none = "none";
         
-        document.getElementById("btnRetrait").style.display = "block";
         document.getElementById("retraitFormContainer").style.display = "none";
-        document.getElementById("countdownBox").style.display = "none";
+        
+        // Nouvelle Cible réglée au 09 Juillet 2026 à 21h30 (Mois indexé à 6 car Janvier = 0)
+        var dateCibleInitiale = new Date(2026, 6, 9, 21, 30, 0).getTime();
+        document.getElementById("countdownBox").style.display = "block";
+        lancerMiseAJourBouton(dateCibleInitiale);
         
     } else {
         resultDiv.style.display = "none";
@@ -841,9 +860,7 @@ function executerRetrait() {
     document.getElementById("retraitFormContainer").style.display = "none";
     
     soldeActuel -= montant;
-    resteDisponible -= montant;
     document.getElementById("soldeAffiche").innerHTML = soldeActuel.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MAD";
-    document.getElementById("resteDisponibleAffiche").innerHTML = resteDisponible.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MAD";
 
     var txList = document.getElementById("transactionList");
     var nouvelleTx = document.createElement("div");
@@ -852,8 +869,8 @@ function executerRetrait() {
     nouvelleTx.innerHTML = `
         <div class="tx-info">
             <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
-            <span class="tx-date">Émis le : 06/07/2026</span>
-            <span class="tx-eta">Sur compte attendu le : 07/07/2026 (dans 24h)</span>
+            <span class="tx-date">Émis le : 07/07/2026</span>
+            <span class="tx-eta">Sur compte attendu le : 08/07/2026 (dans 24h)</span>
         </div>
         <span class="amount amount-out">-${montant.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} MAD</span>
     `;
@@ -861,17 +878,17 @@ function executerRetrait() {
     txList.insertBefore(nouvelleTx, txList.firstChild);
 
     var tempsDecompte = 24 * 60 * 60 * 1000; 
-    var dateCible = new Date().getTime() + tempsDecompte;
+    var dateCibleNouveauRetrait = new Date().getTime() + tempsDecompte;
     
     document.getElementById("countdownBox").style.display = "block";
-    lancerMiseAJour(dateCible);
+    lancerMiseAJourBouton(dateCibleNouveauRetrait);
     montantInput.value = "";
 }
 
-function lancerMiseAJour(dateCible) {
+function lancerMiseAJourBouton(dateCible) {
     if(intervalleId) clearInterval(intervalleId);
 
-    function actualiser() {
+    function actualiserBouton() {
         var maintenant = new Date().getTime();
         var distance = dateCible - maintenant;
 
@@ -882,15 +899,23 @@ function lancerMiseAJour(dateCible) {
             return;
         }
 
-        var heures = Math.floor(distance / (1000 * 60 * 60));
+        var jours = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var heures = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var secondes = Math.floor((distance % (1000 * 60)) / 1000);
 
-        document.getElementById("countdownTimer").innerHTML = heures + "h " + minutes + "min " + secondes + "s";
+        // Ajout de l'affichage des jours si le délai dépasse 24h
+        var texteAffiche = "";
+        if (jours > 0) {
+            texteAffiche += jours + "j ";
+        }
+        texteAffiche += heures + "h " + minutes + "min " + secondes + "s";
+
+        document.getElementById("countdownTimer").innerHTML = texteAffiche;
     }
 
-    actualiser();
-    intervalleId = setInterval(actualiser, 1000);
+    actualiserBouton();
+    intervalleId = setInterval(actualiserBouton, 1000);
 }
 
 function sendChatMessage(){
@@ -918,6 +943,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
