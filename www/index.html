@@ -431,6 +431,17 @@ button:active {
     flex-direction: column;
     gap: 14px;
     margin-bottom: 15px;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 4px;
+}
+.chat-box::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
 }
 
 .msg {
@@ -578,7 +589,7 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">12 156,94 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">6 156,94 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
@@ -612,6 +623,24 @@ button:active {
             </div>
 
             <div class="tx-list" id="transactionList">
+                
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+                        <span class="tx-date">Le : 11/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 13/07/2026</span>
+                    </div>
+                    <span class="amount amount-out">-3 000,00 MAD</span>
+                </div>
+
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+                        <span class="tx-date">Le : 10/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 13/07/2026</span>
+                    </div>
+                    <span class="amount amount-out">-3 000,00 MAD</span>
+                </div>
                 
                 <div class="transaction tx-income">
                     <div class="tx-info">
@@ -748,6 +777,24 @@ button:active {
                         Ce système de décompte est temporairement mis en place afin de garantir la sécurité stricte de vos fonds et la conformité de vos transactions bancaires.
                         <span class="msg-meta">Agent Support • En ligne</span>
                     </div>
+
+                    <div class="msg msg-user">
+                        Bonjour,<br>
+                        Je vous contacte concernant un retrait que j'ai effectué hier. Le compte à rebours (délai de traitement) sur l'application est maintenant terminé, mais l'argent n'est toujours pas arrivé sur mon compte.<br><br>
+                        J'aurais deux questions s'il vous plaît :<br>
+                        1. Quand vais-je recevoir les fonds de ce retrait ?<br>
+                        2. Est-ce que je peux effectuer un nouveau retrait dès maintenant, ou dois-je attendre que le premier soit finalisé pour éviter de bloquer la transaction ?
+                        <span class="msg-meta">Moi • En ligne</span>
+                    </div>
+
+                    <div class="msg msg-agent">
+                        Bonjour,<br>
+                        Nous vous informons que votre retrait a bien été validé et traité de notre côté.<br><br>
+                        Cependant, veuillez noter que les retraits ne sont pas traités par les banques pendant les week-ends et les jours fériés. Comme nous sommes aujourd'hui samedi, vous devriez recevoir vos fonds le lundi 13 juillet.<br><br>
+                        Concernant votre deuxième question : oui, vous pouvez tout à fait effectuer un nouveau retrait dès maintenant. Cela ne bloquera pas votre transaction en cours.<br><br>
+                        Nous restons à votre disposition si vous avez d'autres questions.
+                        <span class="msg-meta">Agent Support • En ligne</span>
+                    </div>
                 </div>
 
                 <div class="chat-input-container">
@@ -813,10 +860,13 @@ function showOperations(){
         
         document.getElementById("retraitFormContainer").style.display = "none";
         
-        // Nouvelle Cible réglée au 09 Juillet 2026 à 21h30 (Mois indexé à 6 car Janvier = 0)
-        var dateCibleInitiale = new Date(2026, 6, 9, 21, 30, 0).getTime();
+        var dateCibleInitiale = new Date(2026, 6, 12, 13, 30, 0).getTime();
         document.getElementById("countdownBox").style.display = "block";
         lancerMiseAJourBouton(dateCibleInitiale);
+        
+        // Force le défilement vers le bas de la chat-box au chargement du tableau de bord
+        var chatBox = document.getElementById("chatBox");
+        chatBox.scrollTop = chatBox.scrollHeight;
         
     } else {
         resultDiv.style.display = "none";
@@ -869,17 +919,15 @@ function executerRetrait() {
     nouvelleTx.innerHTML = `
         <div class="tx-info">
             <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
-            <span class="tx-date">Émis le : 07/07/2026</span>
-            <span class="tx-eta">Sur compte attendu le : 08/07/2026 (dans 24h)</span>
+            <span class="tx-date">Le : 11/07/2026</span>
+            <span class="tx-eta">Reçu sur carte le : 13/07/2026</span>
         </div>
         <span class="amount amount-out">-${montant.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} MAD</span>
     `;
     
     txList.insertBefore(nouvelleTx, txList.firstChild);
 
-    var tempsDecompte = 24 * 60 * 60 * 1000; 
-    var dateCibleNouveauRetrait = new Date().getTime() + tempsDecompte;
-    
+    var dateCibleNouveauRetrait = new Date(2026, 6, 12, 13, 30, 0).getTime();
     document.getElementById("countdownBox").style.display = "block";
     lancerMiseAJourBouton(dateCibleNouveauRetrait);
     montantInput.value = "";
@@ -904,7 +952,6 @@ function lancerMiseAJourBouton(dateCible) {
         var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
         var secondes = Math.floor((distance % (1000 * 60)) / 1000);
 
-        // Ajout de l'affichage des jours si le délai dépasse 24h
         var texteAffiche = "";
         if (jours > 0) {
             texteAffiche += jours + "j ";
@@ -943,6 +990,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
