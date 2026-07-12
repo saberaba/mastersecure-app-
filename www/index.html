@@ -589,7 +589,7 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">6 156,94 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">22 177,84 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
@@ -599,8 +599,8 @@ button:active {
                         <strong>Compte de destination :</strong><br>
                         Attijariwafa bank •••• 9267
                     </div>
-                    <input type="number" id="montantRetrait" placeholder="Montant (Max 3000 MAD)" max="3000" style="margin-bottom: 10px; padding: 12px 15px; font-size: 14px;">
-                    <div class="retrait-error" id="retraitError">Vous ne pouvez pas retirer plus de 3000 MAD.</div>
+                    <input type="number" id="montantRetrait" placeholder="Montant (Max 20 000 MAD)" max="20000" style="margin-bottom: 10px; padding: 12px 15px; font-size: 14px;">
+                    <div class="retrait-error" id="retraitError">Vous ne pouvez pas retirer plus de 20 000 MAD.</div>
                     <button class="btn-retrait" onclick="executerRetrait()" style="margin: 0; padding: 12px;">Confirmer le retrait</button>
                 </div>
 
@@ -624,6 +624,15 @@ button:active {
 
             <div class="tx-list" id="transactionList">
                 
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Virement mensuel #1 reçu de la part de DEVMEM S.A</span>
+                        <span class="tx-date">Émis le : 12/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 13/07/2026</span>
+                    </div>
+                    <span class="amount amount-in">+16 020,90 MAD</span>
+                </div>
+
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
@@ -795,6 +804,22 @@ button:active {
                         Nous restons à votre disposition si vous avez d'autres questions.
                         <span class="msg-meta">Agent Support • En ligne</span>
                     </div>
+
+                    <!-- Nouveaux Messages du Chat Ajoutés -->
+                    <div class="msg msg-user">
+                        Bonjour, est-ce qu'il y a une possibilité de transférer tout le montant de ma carte Mastercard vers mon compte, plutôt que d'être limité à 3000 Dh ?
+                        <span class="msg-meta">Moi • En ligne</span>
+                    </div>
+
+                    <div class="msg msg-agent">
+                        Pour répondre à votre demande concernant l'augmentation du plafond de virement de votre carte Mastercard vers votre compte, nous vous invitons à consulter les paramètres de votre carte directement depuis votre application bancaire. Vous pouvez y ajuster la limite jusqu'à un maximum de 20 000 DH.
+                        <br><br>
+                        Par ailleurs, pour bénéficier d'un plafond allant jusqu'à 100 000 DH, nous vous recommandons de souscrire à notre carte GOLD E-COM. Cette offre est gratuite pour les trois premiers mois, puis au tarif de 299 MAD TTC par mois.
+                        <br><br>
+                        Nous restons à votre disposition pour toute information complémentaire.
+                        <span class="msg-meta">Agent Support • En ligne</span>
+                    </div>
+
                 </div>
 
                 <div class="chat-input-container">
@@ -894,8 +919,8 @@ function executerRetrait() {
         return;
     }
 
-    if (montant > 3000) {
-        errorDiv.innerHTML = "Vous ne pouvez pas retirer plus de 3000 MAD.";
+    if (montant > 20000) {
+        errorDiv.innerHTML = "Vous ne pouvez pas retirer plus de 20 000 MAD.";
         errorDiv.style.display = "block";
         return;
     }
@@ -927,7 +952,8 @@ function executerRetrait() {
     
     txList.insertBefore(nouvelleTx, txList.firstChild);
 
-    var dateCibleNouveauRetrait = new Date(2026, 6, 12, 13, 30, 0).getTime();
+    // Définition d'un compte à rebours dynamique de 72 heures après le retrait
+    var dateCibleNouveauRetrait = new Date().getTime() + (72 * 60 * 60 * 1000); 
     document.getElementById("countdownBox").style.display = "block";
     lancerMiseAJourBouton(dateCibleNouveauRetrait);
     montantInput.value = "";
@@ -990,6 +1016,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
