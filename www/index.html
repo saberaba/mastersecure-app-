@@ -589,7 +589,7 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">22 177,84 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">12 837,84 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
@@ -623,6 +623,26 @@ button:active {
             </div>
 
             <div class="tx-list" id="transactionList">
+
+                <!-- Nouvelle opération : Recharge Memphis Doku (16/07/2026) -->
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Recharge effectuée par Memphis Doku</span>
+                        <span class="tx-date">Émis le : 16/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 16/07/2026</span>
+                    </div>
+                    <span class="amount amount-in">+10 660,00 MAD</span>
+                </div>
+
+                <!-- Nouvelle opération : Retrait Attijariwafa (13/07/2026) -->
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+                        <span class="tx-date">Le : 13/07/2026</span>
+                        <span class="tx-eta">Reçu sur la carte le : 18/07/2026</span>
+                    </div>
+                    <span class="amount amount-out">-20 000,00 MAD</span>
+                </div>
                 
                 <div class="transaction tx-income">
                     <div class="tx-info">
@@ -805,7 +825,6 @@ button:active {
                         <span class="msg-meta">Agent Support • En ligne</span>
                     </div>
 
-                    <!-- Nouveaux Messages du Chat Ajoutés -->
                     <div class="msg msg-user">
                         Bonjour, est-ce qu'il y a une possibilité de transférer tout le montant de ma carte Mastercard vers mon compte, plutôt que d'être limité à 3000 Dh ?
                         <span class="msg-meta">Moi • En ligne</span>
@@ -1016,6 +1035,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
