@@ -589,7 +589,7 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">12 837,84 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">15 111,29 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
@@ -624,7 +624,27 @@ button:active {
 
             <div class="tx-list" id="transactionList">
 
-                <!-- Nouvelle opération : Recharge Memphis Doku (16/07/2026) -->
+                <!-- Nouvelle opération : Retrait depuis Fiverr (19/07/2026) -->
+                <div class="transaction tx-income">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait depuis Fiverr</span>
+                        <span class="tx-date">Émis le : 19/07/2026</span>
+                        <span class="tx-eta">Reçu sur carte le : 19/07/2026</span>
+                    </div>
+                    <span class="amount amount-in">+2 273,45 MAD</span>
+                </div>
+
+                <!-- Nouvelle opération : Retrait vers Attijariwafa (18/07/2026) -->
+                <div class="transaction tx-expense">
+                    <div class="tx-info">
+                        <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
+                        <span class="tx-date">Le : 18/07/2026</span>
+                        <span class="tx-eta">Reçu sur le compte le : 23/07/2026</span>
+                    </div>
+                    <span class="amount amount-out">-20 000,00 MAD</span>
+                </div>
+
+                <!-- Anciennes opérations -->
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Recharge effectuée par Memphis Doku</span>
@@ -634,12 +654,11 @@ button:active {
                     <span class="amount amount-in">+10 660,00 MAD</span>
                 </div>
 
-                <!-- Nouvelle opération : Retrait Attijariwafa (13/07/2026) -->
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
                         <span class="tx-date">Le : 13/07/2026</span>
-                        <span class="tx-eta">Reçu sur le compte le : 18/07/2026</span>
+                        <span class="tx-eta">Reçu sur le compte le : 23/07/2026</span>
                     </div>
                     <span class="amount amount-out">-20 000,00 MAD</span>
                 </div>
@@ -903,8 +922,10 @@ function showOperations(){
         errorDiv.style.none = "none";
         
         document.getElementById("retraitFormContainer").style.display = "none";
+        document.getElementById("btnRetrait").style.display = "none"; // S'assure que le bouton reste masqué au profit du compte à rebours
         
-        var dateCibleInitiale = new Date(2026, 6, 12, 13, 30, 0).getTime();
+        // Configuration de la nouvelle date cible : 22 Juillet 2026 à 23:00:00
+        var dateCibleInitiale = new Date(2026, 6, 22, 23, 0, 0).getTime();
         document.getElementById("countdownBox").style.display = "block";
         lancerMiseAJourBouton(dateCibleInitiale);
         
@@ -1035,6 +1056,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
