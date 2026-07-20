@@ -1,4 +1,5 @@
 name: Build Android APK Official
+
 on:
   push:
     branches: [ main, master ]
@@ -7,6 +8,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout Code
       uses: actions/checkout@v4
@@ -17,25 +19,33 @@ jobs:
         distribution: 'zulu'
         java-version: '17'
 
-    - name: Install Cordova Lite & Setup Icon
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install Cordova & Create App
       run: |
         npm install -g cordova
         cordova create mon-app com.mastersecure.premium MasterSecure
         rm -rf mon-app/www/*
         cp -r www/* mon-app/www/
         
-        # Injection automatique de l'icône avec ton nom de fichier images.png
+        # Injection de l'icône si images.png existe
         if [ -f mon-app/www/images.png ]; then
           sed -i '/<\/widget>/i \    <icon src="www/images.png" \/>' mon-app/config.xml
         fi
 
-    - name: Build APK Backend
+    - name: Add Android Platform & Build APK
       run: |
         cd mon-app
-        cordova platform add android --no-telemetry
-        cordova build android --device --no-telemetry
+        cordova platform add android
+        cordova build android --debug
 
-    - name: Upload APK Ready
+    - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
         name: MasterSecure-APK
