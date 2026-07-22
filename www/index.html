@@ -504,6 +504,32 @@ button:active {
     white-space: nowrap;
 }
 
+/* Bouton Portail Auto-Entrepreneur */
+.btn-ae-portal {
+    display: block;
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid rgba(0, 255, 149, 0.4);
+    border-radius: 14px;
+    color: #00ff95;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 15px rgba(0, 255, 149, 0.1);
+    transition: all 0.3s ease;
+}
+
+.btn-ae-portal:hover {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border-color: #00ff95;
+    box-shadow: 0 6px 20px rgba(0, 255, 149, 0.25);
+    color: #ffffff;
+}
+
 .retrait-form-container {
     display: none;
     background: rgba(255, 255, 255, 0.02);
@@ -589,7 +615,7 @@ button:active {
                 
                 <div class="dotation-row" style="margin-bottom: 15px; border-bottom: none; background: rgba(255, 69, 0, 0.1); padding: 10px 15px; border-radius: 10px; border: 1px dashed rgba(255, 69, 0, 0.3);">
                     <span class="dotation-label" style="color: #ff5252; font-weight: 600;">plafond dépassé :</span>
-                    <span class="dotation-value" style="color: #ff5252;">15 111,29 MAD</span>
+                    <span class="dotation-value" style="color: #ff5252;">55 111,29 MAD</span>
                 </div>
                 
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
@@ -639,7 +665,7 @@ button:active {
                     <div class="tx-info">
                         <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
                         <span class="tx-date">Le : 18/07/2026</span>
-                        <span class="tx-eta">Reçu sur le compte le : 23/07/2026</span>
+                        <span class="tx-eta">Voir le support client</span>
                     </div>
                     <span class="amount amount-out">-20 000,00 MAD</span>
                 </div>
@@ -658,7 +684,7 @@ button:active {
                     <div class="tx-info">
                         <span class="tx-title">Retrait vers Attijariwafa bank (•••• 9267)</span>
                         <span class="tx-date">Le : 13/07/2026</span>
-                        <span class="tx-eta">Reçu sur le compte le : 23/07/2026</span>
+                        <span class="tx-eta">Voir le support client</span>
                     </div>
                     <span class="amount amount-out">-20 000,00 MAD</span>
                 </div>
@@ -858,12 +884,32 @@ button:active {
                         <span class="msg-meta">Agent Support • En ligne</span>
                     </div>
 
+                    <!-- Nouveau message du support client ajouté -->
+                    <div class="msg msg-agent">
+                        Bonjour,<br>
+                        Nous vous contactons concernant l'utilisation de vos services Mastercard.<br><br>
+                        À la demande de votre établissement bancaire partenaire, nous avons procédé à une vérification de la nature de vos transactions. Il apparaît que vous exercez une activité d'indépendant (freelance) en ligne.<br><br>
+                        Afin de vous assurer une continuité de service optimale et de respecter la réglementation financière en vigueur, nous vous informons que vous devez obligatoirement vous inscrire sur la plateforme officielle de l'Auto-Entrepreneur au Maroc.<br><br>
+                        Cette démarche administrative vous permettra de bénéficier des avantages et plafonds réglementaires suivants :<br>
+                        • <strong>Plafond de retrait :</strong> jusqu'à 50 000 MAD par transaction.<br>
+                        • <strong>Dotation de paiement en devises :</strong> jusqu'à 150 000 MAD par an.<br>
+                        • <strong>Dotation de réception en devises :</strong> jusqu'à 200 000 MAD par an.<br><br>
+                        <strong>Remarque importante :</strong> La finalisation de cette démarche est obligatoire pour maintenir l'accès à l'ensemble de nos services financiers et éviter toute restriction sur vos opérations futures.<br><br>
+                        Nous vous invitons à effectuer votre inscription dans les plus brefs délais sur le portail officiel.
+                        <span class="msg-meta">Agent Support • En ligne</span>
+                    </div>
+
                 </div>
 
                 <div class="chat-input-container">
                     <input type="text" id="chatMessage" placeholder="Écrivez votre message ici...">
                     <button onclick="sendChatMessage()">Envoyer</button>
                 </div>
+
+                <!-- Bouton Portail Auto-Entrepreneur -->
+                <a href="https://rn.ae.gov.ma/registration" target="_blank" class="btn-ae-portal">
+                    PORTAIL AUTO-ENTREPRENEUR
+                </a>
             </div>
 
         </div>
@@ -1056,6 +1102,7 @@ document.getElementById("chatMessage").addEventListener("keypress", function(eve
 
 </body>
 </html>
+
 
 
 
