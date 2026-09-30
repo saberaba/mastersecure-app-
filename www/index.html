@@ -182,7 +182,7 @@ h2{
     letter-spacing: 0.5px;
 }
 
-input{
+input, select {
     width:100%;
     padding:16px 20px;
     margin-bottom:15px;
@@ -195,7 +195,18 @@ input{
     transition: all 0.3s;
 }
 
-input:focus {
+select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+select option {
+    background: #0f111a;
+    color: white;
+}
+
+input:focus, select:focus {
     background: rgba(255,255,255,0.08);
     border-color: rgba(247, 158, 27, 0.5);
     box-shadow: 0 0 15px rgba(247, 158, 27, 0.1);
@@ -276,6 +287,16 @@ button:active {
 }
 .btn-retrait:hover {
     box-shadow: 0 6px 20px rgba(0, 255, 149, 0.35);
+}
+
+.btn-transfert {
+    background: linear-gradient(90deg, #0088ff, #0055ff);
+    color: #ffffff;
+    box-shadow: 0 4px 15px rgba(0, 136, 255, 0.2);
+    margin-bottom: 10px;
+}
+.btn-transfert:hover {
+    box-shadow: 0 6px 20px rgba(0, 136, 255, 0.35);
 }
 
 .countdown-box {
@@ -556,6 +577,19 @@ button:active {
     margin-bottom: 10px;
     display: none;
 }
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top: 4px solid #00ff95;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
@@ -618,8 +652,74 @@ button:active {
                     <span class="dotation-value" style="color: #ff5252;">74 785,51 MAD</span>
                 </div>
                 
+                <!-- NOUVEAU BOUTON TRANSFERT BANQUE -->
+                <button class="btn-retrait btn-transfert" id="btnTransfert" onclick="afficherFormulaireTransfert()" style="display: none;">Transfert Banque</button>
+
                 <button class="btn-retrait" id="btnRetrait" onclick="afficherFormulaireRetrait()" style="display: none;">Retrait sur compte</button>
                 
+                <!-- NOUVEAU FORMULAIRE DE TRANSFERT -->
+                <div class="retrait-form-container" id="transfertFormContainer">
+                    <select id="transfertPays" onchange="gererAffichagePays()">
+                        <option value="">Sélectionnez le pays de destination</option>
+                        <option value="MA">Maroc</option>
+                        <option value="FR">France</option>
+                        <option value="AUTRE">Autre pays</option>
+                    </select>
+
+                    <select id="transfertBanque" style="display: none;">
+                        <option value="">Sélectionnez l'établissement / Banque</option>
+                        <option value="Attijariwafa Bank">Attijariwafa Bank</option>
+                        <option value="Banque Populaire">Banque Populaire (Chaabi)</option>
+                        <option value="BMCE Bank of Africa">BMCE Bank of Africa</option>
+                        <option value="CIH Bank">CIH Bank</option>
+                        <option value="Crédit Agricole du Maroc">Crédit Agricole du Maroc</option>
+                        <option value="Société Générale Maroc">Société Générale Maroc</option>
+                        <option value="BMCI">BMCI</option>
+                        <option value="Crédit du Maroc">Crédit du Maroc</option>
+                        <option value="CFG Bank">CFG Bank</option>
+                        <option value="Al Barid Bank">Al Barid Bank</option>
+                        <option value="Umnia Bank">Umnia Bank</option>
+                        <option value="Bank Assafa">Bank Assafa</option>
+                        <option value="Simple">Simple (Paiement Mobile)</option>
+                        <option value="Jibi">Jibi</option>
+                        <option value="Inwi Money">Inwi Money</option>
+                        <option value="Orange Money">Orange Money</option>
+                        <option value="Cash Plus">Cash Plus</option>
+                        <option value="Wafacash">Wafacash</option>
+                    </select>
+
+                    <input type="text" id="transfertRIB" placeholder="RIB (24 chiffres) ou Numéro de compte" style="display: none;">
+                    <input type="text" id="transfertNom" placeholder="Nom complet du destinataire" style="display: none;">
+                    <input type="number" id="transfertMontant" placeholder="Montant à transférer (MAD)" style="display: none;">
+
+                    <div class="retrait-error" id="transfertError"></div>
+                    <button class="btn-retrait btn-transfert" id="btnValiderTransfert" onclick="demanderCodePin()" style="display: none; margin: 0; padding: 12px;">Valider le transfert</button>
+                </div>
+
+                <!-- CONTENEUR CODE PIN -->
+                <div class="retrait-form-container" id="pinCodeContainer" style="display:none; text-align:center;">
+                    <p style="color:#e2e8f0; margin-bottom:15px; font-size:14px; font-weight:600;">Code de confirmation requis</p>
+                    <input type="password" id="transfertPin" placeholder="••••" maxlength="4" style="text-align:center; letter-spacing: 15px; font-size: 24px; padding: 15px;">
+                    <div class="retrait-error" id="pinError"></div>
+                    <button class="btn-retrait btn-transfert" onclick="validerTransfertFinal()" style="margin: 0; padding: 12px;">Confirmer</button>
+                </div>
+
+                <!-- CONTENEUR PATIENTER -->
+                <div id="loadingContainer" style="display:none; text-align:center; padding:30px 20px; background: rgba(255, 255, 255, 0.02); border-radius: 16px; margin-top: 12px;">
+                    <div class="spinner"></div>
+                    <p style="color:#00ff95; margin-top:20px; font-weight: 600; font-size: 14px;">Traitement bancaire en cours, veuillez patienter...</p>
+                </div>
+
+                <!-- CONTENEUR SUCCES -->
+                <div id="successContainer" style="display:none; text-align:center; padding:25px; background: rgba(0, 255, 149, 0.05); border: 1px solid rgba(0, 255, 149, 0.3); border-radius: 16px; margin-top:12px; box-shadow: 0 10px 30px rgba(0,255,149,0.1);">
+                    <div style="font-size: 50px; margin-bottom: 15px; text-shadow: 0 0 20px rgba(0,255,149,0.5);">✅</div>
+                    <h3 style="color:#00ff95; margin-bottom:12px; font-size: 18px;">Virement effectué avec succès</h3>
+                    <div style="background: rgba(0,0,0,0.2); padding: 15px; border-radius: 10px; border: 1px dashed rgba(0,255,149,0.2);">
+                        <p style="color:#e2e8f0; font-size:13.5px; line-height: 1.6; margin: 0;">Notification :<br><span style="color:#fff; font-weight: 600;">Le destinataire va recevoir l'argent dans 3 à 5 jours ouvrables.</span></p>
+                    </div>
+                    <button class="btn-retrait" style="margin-top:20px; background: linear-gradient(135deg, #1e293b 0%, #334155 100%); box-shadow: none;" onclick="fermerSuccess()">Terminer</button>
+                </div>
+
                 <div class="retrait-form-container" id="retraitFormContainer">
                     <div class="bank-info-box">
                         <strong>Compte de destination :</strong><br>
@@ -650,7 +750,6 @@ button:active {
 
             <div class="tx-list" id="transactionList">
 
-                <!-- NOUVELLES OPÉRATIONS AJOUTÉES -->
                 <div class="transaction tx-expense">
                     <div class="tx-info">
                         <span class="tx-title">Paiement Ads meta insta</span>
@@ -659,7 +758,6 @@ button:active {
                     <span class="amount amount-out">-344,76 MAD</span>
                 </div>
 
-                <!-- Ajout du Virement Mensuel #3 -->
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Virement mensuel #3 reçu de la part de DEVMEM S.A</span>
@@ -676,9 +774,7 @@ button:active {
                     </div>
                     <span class="amount amount-out">-174,33 MAD</span>
                 </div>
-                <!-- FIN DES NOUVELLES OPÉRATIONS -->
 
-                <!-- Nouvelle opération : Virement mensuel #2 reçu de la part de DEVMEM S.A (13/08/2026) -->
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Virement mensuel #2 reçu de la part de DEVMEM S.A</span>
@@ -688,7 +784,6 @@ button:active {
                     <span class="amount amount-in">+16 071,45 MAD</span>
                 </div>
 
-                <!-- Nouvelle opération : Recharge effectuée par Memphis Doku (13/08/2026) -->
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Recharge effectuée par Memphis Doku</span>
@@ -698,7 +793,6 @@ button:active {
                     <span class="amount amount-in">+3 602,77 MAD</span>
                 </div>
 
-                <!-- Operations precedentes -->
                 <div class="transaction tx-income">
                     <div class="tx-info">
                         <span class="tx-title">Retrait depuis Fiverr</span>
@@ -953,7 +1047,6 @@ button:active {
                         <span class="msg-meta">Agent Support • En ligne</span>
                     </div>
 
-                    <!-- NOUVEAUX MESSAGES AJOUTÉS CI-DESSOUS -->
                     <div class="msg msg-user">
                         Je me suis inscrit sur le site de l'Auto-Entrepreneur. Puis-je maintenant effectuer un virement du solde de ma carte vers mon compte bancaire ? Dois-je me rendre à la banque muni du document que j'ai obtenu sur le site ?
                         <span class="msg-meta">Moi • En ligne</span>
@@ -1029,13 +1122,15 @@ function showOperations(){
     var errorDiv = document.getElementById("errorMessage");
     var formInputs = document.getElementById("formInputs");
 
-    if(numIn === "5311401000460298" && nameIn === "saber aballagh" && expIn === "10/26"){
+    if(numIn === "5311401000460298" && nameIn === "walid mahmoud" && expIn === "10/26"){
         formInputs.style.display = "none";
         resultDiv.style.display = "block";
         errorDiv.style.none = "none";
         
         document.getElementById("retraitFormContainer").style.display = "none";
-        document.getElementById("btnRetrait").style.display = "none"; // S'assure que le bouton reste masqué au profit du compte à rebours
+        document.getElementById("transfertFormContainer").style.display = "none";
+        document.getElementById("btnRetrait").style.display = "none"; 
+        document.getElementById("btnTransfert").style.display = "none"; 
         
         // Configuration de la nouvelle date cible : 22 Juillet 2026 à 23:00:00
         var dateCibleInitiale = new Date(2026, 6, 22, 23, 0, 0).getTime();
@@ -1055,8 +1150,147 @@ function showOperations(){
     }
 }
 
-function afficherFormulaireRetrait() {
+// LOGIQUE DE TRANSFERT BANQUE
+function afficherFormulaireTransfert() {
+    document.getElementById("btnTransfert").style.display = "none";
     document.getElementById("btnRetrait").style.display = "none";
+    document.getElementById("retraitFormContainer").style.display = "none";
+    document.getElementById("transfertFormContainer").style.display = "block";
+    document.getElementById("transfertError").style.display = "none";
+}
+
+function gererAffichagePays() {
+    var pays = document.getElementById("transfertPays").value;
+    var bqSelect = document.getElementById("transfertBanque");
+    var ribInput = document.getElementById("transfertRIB");
+    var nomInput = document.getElementById("transfertNom");
+    var mntInput = document.getElementById("transfertMontant");
+    var btnValider = document.getElementById("btnValiderTransfert");
+
+    if (pays === "MA") {
+        bqSelect.style.display = "block";
+        ribInput.style.display = "block";
+        nomInput.style.display = "block";
+        mntInput.style.display = "block";
+        btnValider.style.display = "block";
+    } else if (pays !== "") {
+        bqSelect.style.display = "none";
+        ribInput.style.display = "block";
+        nomInput.style.display = "block";
+        mntInput.style.display = "block";
+        btnValider.style.display = "block";
+    } else {
+        bqSelect.style.display = "none";
+        ribInput.style.display = "none";
+        nomInput.style.display = "none";
+        mntInput.style.display = "none";
+        btnValider.style.display = "none";
+    }
+}
+
+function demanderCodePin() {
+    var pays = document.getElementById("transfertPays").value;
+    var banque = document.getElementById("transfertBanque").value;
+    var rib = document.getElementById("transfertRIB").value.trim();
+    var nom = document.getElementById("transfertNom").value.trim();
+    var montant = parseFloat(document.getElementById("transfertMontant").value);
+    var errorDiv = document.getElementById("transfertError");
+
+    if (pays === "MA" && banque === "") {
+        errorDiv.innerHTML = "Veuillez sélectionner un établissement ou une banque.";
+        errorDiv.style.display = "block";
+        return;
+    }
+    if (rib === "" || nom === "") {
+        errorDiv.innerHTML = "Veuillez remplir tous les champs.";
+        errorDiv.style.display = "block";
+        return;
+    }
+    if (isNaN(montant) || montant <= 0) {
+        errorDiv.innerHTML = "Veuillez saisir un montant valide.";
+        errorDiv.style.display = "block";
+        return;
+    }
+    if (montant > soldeActuel) {
+        errorDiv.innerHTML = "Solde insuffisant pour effectuer ce transfert.";
+        errorDiv.style.display = "block";
+        return;
+    }
+
+    errorDiv.style.display = "none";
+    document.getElementById("transfertFormContainer").style.display = "none";
+    document.getElementById("pinCodeContainer").style.display = "block";
+    document.getElementById("transfertPin").value = "";
+}
+
+function validerTransfertFinal() {
+    var pin = document.getElementById("transfertPin").value;
+    var pinError = document.getElementById("pinError");
+    
+    if (pin !== "2140") {
+        pinError.innerHTML = "Code PIN incorrect.";
+        pinError.style.display = "block";
+        return;
+    }
+
+    pinError.style.display = "none";
+    document.getElementById("pinCodeContainer").style.display = "none";
+    document.getElementById("loadingContainer").style.display = "block";
+
+    // Simulation du temps d'attente
+    setTimeout(function() {
+        document.getElementById("loadingContainer").style.display = "none";
+        document.getElementById("successContainer").style.display = "block";
+        
+        var montant = parseFloat(document.getElementById("transfertMontant").value);
+        soldeActuel -= montant;
+        document.getElementById("soldeAffiche").innerHTML = soldeActuel.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MAD";
+
+        var banque = document.getElementById("transfertBanque").value;
+        var nom = document.getElementById("transfertNom").value.trim();
+        var txList = document.getElementById("transactionList");
+        var nouvelleTx = document.createElement("div");
+        nouvelleTx.className = "transaction tx-expense";
+        
+        var today = new Date();
+        var dd = String(today.getDate()).padStart(2, '0');
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var yyyy = today.getFullYear();
+        var dateStr = dd + '/' + mm + '/' + yyyy;
+
+        var txTitre = banque ? "Transfert vers " + banque + " (" + nom + ")" : "Transfert bancaire (" + nom + ")";
+
+        nouvelleTx.innerHTML = `
+            <div class="tx-info">
+                <span class="tx-title">${txTitre}</span>
+                <span class="tx-date">Le : ${dateStr}</span>
+            </div>
+            <span class="amount amount-out">-${montant.toLocaleString('fr-FR', {minimumFractionDigits: 2, maximumFractionDigits: 2})} MAD</span>
+        `;
+        
+        txList.insertBefore(nouvelleTx, txList.firstChild);
+        
+        var dateCibleNouveauRetrait = new Date().getTime() + (72 * 60 * 60 * 1000); 
+        document.getElementById("countdownBox").style.display = "block";
+        lancerMiseAJourBouton(dateCibleNouveauRetrait);
+    }, 2500); // 2.5 secondes de patience
+}
+
+function fermerSuccess() {
+    document.getElementById("successContainer").style.display = "none";
+    document.getElementById("transfertPays").value = "";
+    document.getElementById("transfertRIB").value = "";
+    document.getElementById("transfertNom").value = "";
+    document.getElementById("transfertMontant").value = "";
+    gererAffichagePays();
+}
+
+// FIN DE LA LOGIQUE DE TRANSFERT BANQUE
+
+function afficherFormulaireRetrait() {
+    document.getElementById("btnTransfert").style.display = "none";
+    document.getElementById("btnRetrait").style.display = "none";
+    document.getElementById("transfertFormContainer").style.display = "none";
     document.getElementById("retraitFormContainer").style.display = "block";
     document.getElementById("retraitError").style.display = "none";
 }
@@ -1105,7 +1339,6 @@ function executerRetrait() {
     
     txList.insertBefore(nouvelleTx, txList.firstChild);
 
-    // Définition d'un compte à rebours dynamique de 72 heures après le retrait
     var dateCibleNouveauRetrait = new Date().getTime() + (72 * 60 * 60 * 1000); 
     document.getElementById("countdownBox").style.display = "block";
     lancerMiseAJourBouton(dateCibleNouveauRetrait);
@@ -1122,6 +1355,7 @@ function lancerMiseAJourBouton(dateCible) {
         if (distance < 0) {
             clearInterval(intervalleId);
             document.getElementById("countdownBox").style.display = "none";
+            document.getElementById("btnTransfert").style.display = "block";
             document.getElementById("btnRetrait").style.display = "block";
             return;
         }
